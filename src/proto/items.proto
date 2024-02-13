@@ -139,6 +139,8 @@ message Token {
 
   optional int32 last_daughter = 31;
 
+  optional Roman roman = 32;
+
   extensions 1000 to max;
 }
 
