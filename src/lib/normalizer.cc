@@ -85,14 +85,45 @@ bool Normalizer::Setup(const string &configuration_proto,
       return false;
     }
   }
+  if (configuration.has_preprocessor_grammar()) {
+    pre_processor_rules_.reset(new RuleSystem);
+    if (pre_processor_rules_->LoadGrammar(
+            configuration.preprocessor_grammar(),
+            pathname_prefix))
+      this->do_preprocess = true;
+    else
+      LoggerWarn("Unable to load pre_process_grammar");
+  }
+  if (configuration.has_postprocessor_grammar()) {
+    post_processor_rules_.reset(new RuleSystem);
+      if (post_processor_rules_->LoadGrammar(
+              configuration.postprocessor_grammar(),
+              pathname_prefix))
+        this->do_postprocess = true;
+    else
+      LoggerWarn("No post_process_grammar found");
+  }
+
   return true;
 }
 
 bool Normalizer::Normalize(const string &input, string *output) const {
   std::unique_ptr<Utterance> utt;
   utt.reset(new Utterance);
-  if (!Normalize(utt.get(), input)) return false;
-  *output = LinearizeWords(utt.get());
+  string pre_p_output=input.c_str();
+  if (this->do_preprocess){
+    pre_processor_rules_->ApplyRules(input,&pre_p_output,false);
+  }
+
+  if (!Normalize(utt.get(), pre_p_output)) return false;
+
+  if (this->do_postprocess){
+    string post_p_input = LinearizeWords(utt.get());
+    post_processor_rules_->ApplyRules(post_p_input,output,false);
+  }
+  else
+    *output = LinearizeWords(utt.get());
+
   return true;
 }
 

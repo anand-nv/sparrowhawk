@@ -1,0 +1,5 @@
+grammar_file: "en_toy/verbalize/post_process.far"
+
+grammar_name: "PostProcessor"
+
+rules { main: "POSTPROCESSOR" }
