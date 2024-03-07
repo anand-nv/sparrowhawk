@@ -92,7 +92,7 @@ bool Normalizer::Setup(const string &configuration_proto,
             pathname_prefix))
       this->do_preprocess = true;
     else
-      LoggerWarn("Unable to load pre_processor_grammar");
+      LoggerWarn("Unable to load pre_process_grammar");
   }
   if (configuration.has_postprocessor_grammar()) {
     post_processor_rules_.reset(new RuleSystem);
@@ -101,7 +101,7 @@ bool Normalizer::Setup(const string &configuration_proto,
               pathname_prefix))
         this->do_postprocess = true;
     else
-      LoggerWarn("Unable to load post_processor_grammar");
+      LoggerWarn("No post_process_grammar found");
   }
 
   return true;
